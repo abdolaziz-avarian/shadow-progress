@@ -1,0 +1,21 @@
+name: iPhone build and tests
+
+# Every pushed milestone and proposed change receives the same validation.
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      # Check out source; no signing certificates or private credentials are needed.
+      - uses: actions/checkout@v4
+      - name: Build and run persistence tests on an iPhone simulator
+        run: bash Scripts/verify.sh

@@ -76,7 +76,8 @@ struct ContentView: View {
                 }.frame(maxWidth: .infinity, alignment: .leading).expeditionCard()
 
                 Button {
-                    filter = .remaining; category = nil; search = ""; selectedTab = 1
+                    filter = store.completedCount(in: catalog) == catalog.count ? .completed : .remaining
+                    category = nil; search = ""; selectedTab = 1
                 } label: {
                     HStack {
                         Image(systemName: "location.north.fill")

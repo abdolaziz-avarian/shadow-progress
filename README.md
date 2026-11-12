@@ -9,3 +9,34 @@ Open `ShadowProgress.xcodeproj` in Xcode. The app targets iOS 17 or later and iP
 Progress is entered manually and stored on the device; it does not sync with Steam, Xbox, or PlayStation. Achievement completion is separate from the game's own completion percentage. This is an independent fan project; game names belong to their respective owners.
 
 Code comments explain each model, persistence operation, and screen. `CHANGELOG.md` records implementation milestones; Git commit messages describe each update.
+
+## Features
+
+- Expedition dashboard with overall and category progress.
+- 99 Steam/Xbox achievements, with an optional base-game-only view of 63 objectives.
+- Search; category, completion, and pinned filters; title and progress sorting.
+- Manual counters, completion dates, pinned objectives, and autosaved personal notes.
+- Story-spoiler protection with individual reveal controls.
+- Local persistence and JSON backup export/import through Files.
+- Confirmation before replacing a journal or resetting progress; validation prevents invalid backups from replacing current data.
+
+## Build and test
+
+Run `bash Scripts/verify.sh` on a Mac with Xcode and an installed iPhone simulator. Alternatively, open the shared **ShadowProgress** scheme and choose Product → Test. Tests cover catalog integrity, counter bounds, completion dates, persistence after relaunch, backup round trips, rejected imports, DLC totals, and recovery of unreadable saved data.
+
+GitHub Actions runs the same script on pushes to `main` or `codex/**` and on pull requests. Running on a physical iPhone requires your own Apple development team; simulator builds need no signing credentials.
+
+## Project guide
+
+| Location | Purpose |
+| --- | --- |
+| `ShadowProgress/Models/` | Catalog definitions, user progress, save/load, and backup validation |
+| `ShadowProgress/Views/ContentView.swift` | Dashboard, achievement list, search, and filters |
+| `ShadowProgress/Views/AchievementDetail.swift` | Counters, completion, pinning, and notes |
+| `ShadowProgress/Views/SettingsView.swift` | Spoilers, DLC scope, backup tools, and reset |
+| `ShadowProgress/Views/Theme.swift` | Colors and original vector scenery |
+| `ShadowProgressTests/` | Persistence and data-integrity regression tests |
+| `Docs/CATALOG.md` | Achievement sources and platform scope |
+| `Scripts/GenerateAppIcon.swift` | Reproducible original icon artwork |
+
+Backups include your personal notes. Export one before uninstalling the app or resetting your journal. Preferences such as spoiler visibility remain device-local and are not part of the progress backup. The PlayStation platinum trophy is not included.

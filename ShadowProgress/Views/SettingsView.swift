@@ -22,6 +22,7 @@ struct SettingsView: View {
     @State private var export = false
     @State private var importing = false
     @State private var confirmReset = false
+    @State private var confirmImport = false
     @State private var pendingImport: Data?
     @State private var backup = BackupDocument()
     @State private var message: String?
@@ -68,9 +69,10 @@ struct SettingsView: View {
                 let size = try url.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0
                 guard size <= 5_000_000 else { throw ImportError.tooLarge }
                 pendingImport = try Data(contentsOf: url)
+                confirmImport = true
             } catch { message = error.localizedDescription }
         }
-        .confirmationDialog("Replace your current journal with this backup?", isPresented: Binding(get: { pendingImport != nil }, set: { if !$0 { pendingImport = nil } }), titleVisibility: .visible) {
+        .confirmationDialog("Replace your current journal with this backup?", isPresented: $confirmImport, titleVisibility: .visible) {
             Button("Replace progress", role: .destructive) {
                 guard let data = pendingImport else { return }
                 do { try store.importData(data); message = "Your backup was restored." }
