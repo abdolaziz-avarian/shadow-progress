@@ -19,6 +19,7 @@ struct SettingsView: View {
     @EnvironmentObject private var store: ProgressStore
     @AppStorage("includeDLC") private var includeDLC = true
     @AppStorage("hideSpoilers") private var hideSpoilers = true
+    @AppStorage("appAppearance") private var appearance = AppAppearance.system
     @State private var export = false
     @State private var importing = false
     @State private var confirmReset = false
@@ -29,6 +30,13 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
+            Section("Appearance") {
+                Picker("Theme", selection: $appearance) {
+                    ForEach(AppAppearance.allCases) { Text($0.rawValue).tag($0) }
+                }.pickerStyle(.segmented)
+                Label("Jungle tones, in every light", systemImage: "circle.lefthalf.filled")
+                    .foregroundStyle(.secondary).font(.footnote)
+            }
             Section {
                 Toggle("Include DLC achievements", isOn: $includeDLC)
                 Toggle("Hide story spoilers", isOn: $hideSpoilers)
@@ -45,10 +53,15 @@ struct SettingsView: View {
                 Text("Backups include counts, completion dates, pins, and personal notes. Store them somewhere private. Import replaces your current journal after confirmation.")
             }
             Section("About the journal") {
-                LabeledContent("Version", value: "1.0")
+                LabeledContent("Version", value: "1.1")
                 LabeledContent("Platform list", value: "Steam / Xbox")
                 Text("PlayStation’s platinum trophy is not included. Requirements are short checklists, not walkthroughs. Progress is entered manually; game accounts are not connected.").font(.footnote).foregroundStyle(.secondary)
                 Link("View achievement source", destination: URL(string: "https://steamcommunity.com/stats/750920/achievements")!)
+                ForEach(GuideSource.allCases) { source in
+                    Link(source.title, destination: source.url)
+                }
+                Text("Chapter timing is a planning guide. Skill purchases, routes, game version, and enemy availability affect when a goal can be earned. The Atlas diagram is schematic; detailed maps load online from Stella’s site.")
+                    .font(.footnote).foregroundStyle(.secondary)
                 Text("An independent fan companion for Shadow of the Tomb Raider. Not affiliated with the game’s developers or publishers. No analytics or advertising.").font(.footnote).foregroundStyle(.secondary)
             }
             Section {

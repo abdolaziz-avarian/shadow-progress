@@ -92,4 +92,48 @@ final class ProgressStoreTests: XCTestCase {
         XCTAssertNotNil(restored.storageMessage)
         XCTAssertEqual(defaults.data(forKey: "shadow-progress.archive.v1.recovery"), corrupt)
     }
+
+    func testMissableGuideContainsExactlyTheEnemyCombatGoals() {
+        let missable = AchievementCatalog.all.filter { JourneyGuide.guide(for: $0).risk == .missable }
+        XCTAssertEqual(missable.count, 14)
+        XCTAssertEqual(Set(missable.map(\.id)), JourneyGuide.missableIDs)
+        // Animal objectives remain obtainable in free roam; do not alarm players unnecessarily.
+        for id in ["base-29", "base-33", "base-34", "base-43"] {
+            XCTAssertEqual(JourneyGuide.guide(for: AchievementCatalog.all.first { $0.id == id }!).risk, .revisit)
+        }
+    }
+
+    func testStoryGatedCombatIsNotSuggestedBeforeItsUnlockChapter() {
+        let friendlyFire = AchievementCatalog.all.first { $0.id == "base-21" }!
+        let eagleTalon = AchievementCatalog.all.first { $0.id == "base-14" }!
+        XCTAssertEqual(JourneyGuide.guide(for: friendlyFire).firstChapter, .oilFields)
+        XCTAssertEqual(JourneyGuide.guide(for: eagleTalon).firstChapter, .kuwaqYaku)
+        XCTAssertFalse(JourneyGuide.objectives(in: .cozumel).contains { $0.id == eagleTalon.id })
+        XCTAssertFalse(JourneyGuide.objectives(in: .kuwaqYaku).contains { $0.id == friendlyFire.id })
+        XCTAssertTrue(JourneyGuide.objectives(in: .oilFields).contains { $0.id == friendlyFire.id })
+    }
+
+    func testFinalAuditIncludesAllMissablesWithoutTurningThemIntoCleanupGoals() {
+        let finalReview = JourneyGuide.objectives(in: .returnPaititi)
+        XCTAssertTrue(JourneyGuide.missableIDs.isSubset(of: Set(finalReview.map(\.id))))
+        XCTAssertFalse(JourneyGuide.objectives(in: .cleanup).contains { JourneyGuide.missableIDs.contains($0.id) })
+    }
+
+    func testDLCPlanningIsSeparateFromTheMainStory() {
+        for item in AchievementCatalog.all where item.isDLC {
+            let guide = JourneyGuide.guide(for: item)
+            XCTAssertEqual(guide.firstChapter, .dlc)
+            XCTAssertEqual(guide.risk, .dlc)
+        }
+        XCTAssertEqual(JourneyGuide.objectives(in: .dlc).count, 36)
+    }
+
+    func testGuideUpdateKeepsExistingBackupIdentifiers() throws {
+        let saved = ProgressArchive(entries: ["base-21": AchievementProgress(count: 3, isFavorite: true, notes: "Keep the combat save")])
+        try store.importData(JSONEncoder().encode(saved))
+        let item = AchievementCatalog.all.first { $0.id == "base-21" }!
+        XCTAssertEqual(store.progress(for: item).count, 3)
+        XCTAssertEqual(store.progress(for: item).notes, "Keep the combat save")
+        XCTAssertTrue(store.progress(for: item).isFavorite)
+    }
 }
