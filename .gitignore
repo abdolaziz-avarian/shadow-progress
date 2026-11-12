@@ -1,0 +1,9 @@
+# Xcode keeps personal editor state and build output outside source control.
+.DS_Store
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcresult
+.swiftpm/
+.build/
