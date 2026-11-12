@@ -3,8 +3,8 @@ import SwiftUI
 /// Semantic asset colors resolve separately in light and dark appearance.
 /// Glass belongs to navigation/controls; content cards remain readable solid surfaces.
 enum Theme {
-    static let background = Color("AppBackground")
-    static let panel = Color("CardBackground")
+    static let background = Color(uiColor: .systemGroupedBackground)
+    static let panel = Color(uiColor: .secondarySystemGroupedBackground)
     static let gold = Color("AccentColor")
     static let jungle = Color("JungleTint")
     static let warning = Color("WarningTint")

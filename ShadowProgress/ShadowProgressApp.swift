@@ -21,10 +21,20 @@ struct ShadowProgressApp: App {
 @MainActor
 enum AppPreferences {
     static let defaults: UserDefaults = {
-        guard ProcessInfo.processInfo.arguments.contains("--ui-testing") else { return .standard }
-        let suite = "com.abdolazizavarian.ShadowProgress.UITesting"
-        let defaults = UserDefaults(suiteName: suite)!
-        defaults.removePersistentDomain(forName: suite)
+        let defaults: UserDefaults
+        if ProcessInfo.processInfo.arguments.contains("--ui-testing") {
+            let suite = "com.abdolazizavarian.ShadowProgress.UITesting"
+            defaults = UserDefaults(suiteName: suite)!
+            defaults.removePersistentDomain(forName: suite)
+        } else { defaults = .standard }
+        // Migrate only the navigation preference; achievement IDs and saved progress are untouched.
+        if defaults.string(forKey: "currentMissionID") == nil {
+            let mission: StoryMission
+            if let legacy = defaults.string(forKey: "currentChapter").flatMap(JourneyChapter.init(rawValue:)) {
+                mission = StoryMission.from(legacy: legacy)
+            } else { mission = .faintLight }
+            defaults.set(mission.rawValue, forKey: "currentMissionID")
+        }
         return defaults
     }()
 }

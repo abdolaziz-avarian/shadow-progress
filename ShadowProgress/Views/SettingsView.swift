@@ -14,11 +14,9 @@ struct BackupDocument: FileDocument {
     }
 }
 
-/// Preferences affect the visible catalog without erasing any hidden DLC progress.
+/// Appearance and backup tools never conceal achievement content.
 struct SettingsView: View {
     @EnvironmentObject private var store: ProgressStore
-    @AppStorage("includeDLC") private var includeDLC = true
-    @AppStorage("hideSpoilers") private var hideSpoilers = true
     @AppStorage("appAppearance") private var appearance = AppAppearance.system
     @State private var export = false
     @State private var importing = false
@@ -37,11 +35,10 @@ struct SettingsView: View {
                 Label("Jungle tones, in every light", systemImage: "circle.lefthalf.filled")
                     .foregroundStyle(.secondary).font(.footnote)
             }
-            Section {
-                Toggle("Include DLC achievements", isOn: $includeDLC)
-                Toggle("Hide story spoilers", isOn: $hideSpoilers)
-            } header: { Text("Your expedition") } footer: {
-                Text("Base game: 63 achievements. With DLC: 99. Excluding DLC keeps its saved progress. Hidden objectives can be revealed individually.")
+            Section("Achievement visibility") {
+                Label("All 99 achievements stay visible", systemImage: "eye")
+                Text("Spoiler, Missable, and DLC flairs provide context without concealing names or descriptions.")
+                    .font(.footnote).foregroundStyle(.secondary)
             }
             Section {
                 Button("Export progress backup", systemImage: "square.and.arrow.up") {
@@ -53,7 +50,7 @@ struct SettingsView: View {
                 Text("Backups include counts, completion dates, pins, and personal notes. Store them somewhere private. Import replaces your current journal after confirmation.")
             }
             Section("About the journal") {
-                LabeledContent("Version", value: "1.1")
+                LabeledContent("Version", value: "1.2")
                 LabeledContent("Platform list", value: "Steam / Xbox")
                 Text("PlayStation’s platinum trophy is not included. Requirements are short checklists, not walkthroughs. Progress is entered manually; game accounts are not connected.").font(.footnote).foregroundStyle(.secondary)
                 Link("View achievement source", destination: URL(string: "https://steamcommunity.com/stats/750920/achievements")!)

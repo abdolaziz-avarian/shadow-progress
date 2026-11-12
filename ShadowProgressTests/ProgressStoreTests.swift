@@ -136,4 +136,32 @@ final class ProgressStoreTests: XCTestCase {
         XCTAssertEqual(store.progress(for: item).notes, "Keep the combat save")
         XCTAssertTrue(store.progress(for: item).isFavorite)
     }
+
+    func testEveryAchievementHasExactlyOnePrimaryCollection() {
+        let chapterGoals = StoryMission.allCases.flatMap { AchievementOrganization.goals(in: $0) }
+        let expansionGoals = (AchievementOrganization.expansionNames + ["Across all DLC"]).flatMap { AchievementOrganization.goals(inExpansion: $0) }
+        let all = chapterGoals + AchievementOrganization.acrossGame + expansionGoals
+        XCTAssertEqual(all.count, 99)
+        XCTAssertEqual(Set(all.map(\.id)), Set(AchievementCatalog.all.map(\.id)))
+        XCTAssertEqual(expansionGoals.count, 36)
+    }
+
+    func testChapterProgressExcludesCumulativeCombatGoals() {
+        let owned = AchievementOrganization.goals(in: .pathLiving)
+        XCTAssertEqual(Set(owned.map(\.id)), ["base-37", "base-49"])
+        let stealth = AchievementCatalog.all.first { $0.id == "base-07" }!
+        XCTAssertEqual(AchievementOrganization.home(for: stealth), .acrossGame)
+        store.toggleComplete(stealth)
+        XCTAssertEqual(store.completedCount(in: owned), 0)
+        XCTAssertTrue(AchievementOrganization.ongoing(at: .pathLiving).contains { $0.id == stealth.id })
+    }
+
+    func testRealStoryMissionOrderAndDLCMetaGoal() {
+        XCTAssertEqual(StoryMission.allCases.count, 21)
+        XCTAssertEqual(StoryMission.allCases.first, .faintLight)
+        XCTAssertEqual(StoryMission.allCases.last, .citySerpent)
+        XCTAssertEqual(StoryMission.downpour.number, 16)
+        XCTAssertEqual(AchievementOrganization.goals(inExpansion: "The Path Home").count, 5)
+        XCTAssertEqual(AchievementOrganization.goals(inExpansion: "Across all DLC").map(\.id), ["dlc-seasoned-pro"])
+    }
 }

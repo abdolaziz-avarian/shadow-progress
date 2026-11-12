@@ -8,7 +8,7 @@ Sources checked during implementation:
 - [Exophase achievement list and DLC groupings](https://www.exophase.com/game/shadow-of-the-tomb-raider-steam/achievements/)
 - [TrueAchievements platform counts](https://www.trueachievements.com/game/shadow-of-the-tomb-raider/achievements)
 
-Titles identify in-game objectives. Requirements are concise factual paraphrases, with original wording for the checklist UI. Categories are editorial groupings. Story objectives and DLC descriptions are hidden by default to limit spoilers. The app does not redistribute game art, achievement icons, or walkthrough text.
+Titles identify in-game objectives. Requirements are concise factual paraphrases, with original wording for the checklist UI. Categories are editorial groupings. Every title and description is visible. Spoiler, Missable, and DLC flairs annotate content without concealing it. The app does not redistribute game art, achievement icons, or walkthrough text.
 
 Counters help the player keep notes; they are not live game statistics. Single-event objectives, such as three headshots in three seconds, use a single completion toggle because separate actions do not satisfy the requirement. Completing a related objective does not automatically unlock other achievements. Difficulty stacking remains the player's responsibility to verify in the game.
 

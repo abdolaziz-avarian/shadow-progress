@@ -1,6 +1,10 @@
 # Chapter planning and maps
 
-The Journey follows 15 walkthrough areas, then free-roam cleanup and optional DLC. These are editorial route checkpoints, not numbered chapters exposed by the game. Selecting a checkpoint changes recommendations only; it never completes achievements.
+The chapter library follows the game's 21 actual story missions, grouped into region collections. The [story mission index](https://www.powerpyx.com/shadow-of-the-tomb-raider-full-walkthrough-all-story-missions/) supplies mission order. Selecting a current chapter changes navigation and timing context only; it never completes achievements.
+
+Every achievement has one primary home: a specific mission, Across the game, or an expansion pack. Chapter progress counts only that mission's own goals. Relevant cumulative combat goals appear separately as Ongoing combat goals, without being counted again. Difficulty runs, global collection totals, and crafting counters belong to Across the game. The Seasoned Pro meta-achievement belongs to Across all DLC rather than only The Path Home.
+
+All 99 names and requirements remain visible, including spoilers and DLC. The obsolete hide-spoilers and include-DLC preferences are ignored; flairs communicate context without concealing content. Player-selected search, progress, and category filters remain available.
 
 ## Missable classification
 
@@ -25,6 +29,6 @@ Detailed game maps load directly from Stella's site in the native Safari viewer 
 
 ## Appearance
 
-The app uses native navigation stacks, grouped lists, pickers, sheets, search, toolbars, and tab bars so the installed OS supplies its current design. Custom glass controls use the iOS 26+ glass API, with a material fallback on older systems. Semantic colors support System, Light, and Dark appearance without forcing text colors. Standard, dark, and tinted icon variants are generated from the repository's original vector geometry.
+The app has Chapters, Map, and a dedicated native Search tab. It uses native navigation stacks, system content backgrounds, grouped lists, pickers, sheets, search, toolbars, and minimizable tab bars so the installed OS supplies its current design. Custom glass controls use the iOS 26+ glass API, with a material fallback on older systems. Semantic colors support System, Light, and Dark appearance without forcing text colors. Standard, dark, and tinted icon variants are generated from the repository's original vector geometry.
 
 [Apple's SwiftUI design updates](https://developer.apple.com/videos/play/wwdc2026/269/) informed the use of system components and restrained glass surfaces. The project is built with the installed Xcode 27 SDK; simulator verification uses the installed iOS 26.5 runtime rather than claiming an untested iOS 27 runtime.

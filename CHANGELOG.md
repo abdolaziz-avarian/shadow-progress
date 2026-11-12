@@ -39,3 +39,16 @@ Subsequent milestones are committed separately with explanatory Git messages.
 - Expanded data tests and added isolated UI tests for chapter selection, map presentation, theme switching, and filtering.
 - Added source/provenance documentation and made newer GitHub pushes supersede older CI runs.
 - Verified the iPhone Simulator build, 12 data tests, and 2 UI tests. Reviewed light/dark, chapter, filter, and Atlas screenshots.
+
+
+## 1.2 — Mission library and visible achievement flairs
+
+- Replaced the four-tab dashboard layout with Chapters, Map, and the native Search tab.
+- Replaced the 15-area checklist with the 21 actual story missions in browsable region collections.
+- Assigned every achievement one primary home and separated ongoing combat goals from chapter completion counts.
+- Moved global collections, difficulty runs, and cumulative tasks into Across the game; grouped DLC by pack with a separate cross-pack goal.
+- Removed all spoiler concealment and the DLC visibility toggle. All names and descriptions are visible with informational flairs.
+- Used native system content surfaces, restrained glass navigation, a compact Continue card, and adaptive collection tiles.
+- Added swipe completion/pinning, search over spoiler titles and requirements, organization integrity tests, and updated UI regression checks.
+- Preserved saved progress and migrated the current navigation checkpoint into the new mission hierarchy.
+- Verified the simulator build and all 17 tests, including visible spoiler titles/requirements and correct chapter-only progress counts.

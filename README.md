@@ -12,18 +12,15 @@ Code comments explain each model, persistence operation, and screen. `CHANGELOG.
 
 ## Features
 
-- Expedition dashboard with overall and category progress.
-- 99 Steam/Xbox achievements, with an optional base-game-only view of 63 objectives.
-- Search; category, completion, and pinned filters; title and progress sorting.
-- Manual counters, completion dates, pinned objectives, and autosaved personal notes.
-- Story-spoiler protection with individual reveal controls.
-- A 15-area chapter route with manually selected current position, chapter plans, and prerequisites.
-- Prominent warnings for 14 missable combat goals, verified practical opportunities, and a final combat audit.
-- System, Light, and Dark themes with native navigation, search, grouped lists, and glass controls.
-- An offline region-route Atlas plus attributed, detailed game maps in the in-app browser (internet required).
-- Original jungle artwork and standard, dark, and tinted eclipse/temple app icons.
-- Local persistence and JSON backup export/import through Files.
-- Confirmation before replacing a journal or resetting progress; validation prevents invalid backups from replacing current data.
+- A chapter library with the game's 21 actual story missions, grouped into region collections.
+- One primary collection per achievement: a specific story mission, Across the game, or a DLC pack.
+- Chapter completion counts exclude cumulative combat goals; relevant ongoing goals appear in a separate section.
+- All 99 achievement titles and requirements remain visible, with Spoiler, Missable, and DLC flairs.
+- A native search tab, All/Missable/Pinned segments, progress/category filters, and swipe actions for completion and pinning.
+- Manual counters, completion dates, personal notes, validated backups, and local persistence.
+- System, Light, and Dark appearance with current native navigation and system content surfaces.
+- An offline route map and attributed detailed game maps inside the app (internet required).
+- Original jungle artwork and standard, dark, and tinted app icons.
 
 ## Build and test
 
@@ -39,9 +36,9 @@ GitHub Actions runs the same script on pushes to `main` or `codex/**` and on pul
 | `ShadowProgress/Views/ContentView.swift` | Dashboard, achievement list, search, and filters |
 | `ShadowProgress/Views/AchievementDetail.swift` | Counters, completion, pinning, and notes |
 | `ShadowProgress/Views/SettingsView.swift` | Spoilers, DLC scope, backup tools, and reset |
-| `ShadowProgress/Views/Theme.swift` | Colors and original vector scenery |
+| `ShadowProgress/Views/Theme.swift` | Semantic system surfaces and game accents |
 | `ShadowProgress/Models/JourneyGuide.swift` | Chapter order, missable classifications, timing, and prerequisites |
-| `ShadowProgress/Views/JourneyView.swift` | Chapter plans and the final combat audit |
+| `ShadowProgress/Views/JourneyView.swift` | Chapter library, real story missions, global goals, and expansions |
 | `ShadowProgress/Views/AtlasView.swift` | Offline route diagram and native viewer for published maps |
 | `ShadowProgressTests/` | Persistence and data-integrity regression tests |
 | `ShadowProgressUITests/` | Theme, chapter, map, and filter interaction checks |
@@ -50,8 +47,8 @@ GitHub Actions runs the same script on pushes to `main` or `codex/**` and on pul
 | `Docs/ARTWORK.md` | Asset provenance and the image-generation prompt |
 | `Scripts/GenerateAppIcon.swift` | Reproducible original icon artwork |
 
-Backups include your personal notes. Export one before uninstalling the app or resetting your journal. Preferences such as spoiler visibility remain device-local and are not part of the progress backup. The PlayStation platinum trophy is not included.
+Backups include your personal notes. Export one before uninstalling the app or resetting your journal. Appearance and current-chapter preferences remain device-local and are not part of the progress backup. The PlayStation platinum trophy is not included.
 
 The layout uses current system components when running on iOS 27, with iOS 26+ custom glass and a material fallback on older versions. Local verification uses Xcode 27.2 and the installed iOS 26.5 iPhone simulator. Chapter timing is guidance rather than a live check of your skills or remaining enemies. The Atlas route diagram is schematic; full annotated maps load directly from Stella's website and are not bundled.
 
-Latest local validation: **14 tests passed** (12 data tests and 2 UI tests), including theme changes, chapter selection, missable filtering, and the published-map viewer.
+Latest local validation: **17 tests passed** (15 data tests and 2 UI tests), covering mission collections, unique achievement ownership, cumulative-goal counts, visible spoiler search, themes, filters, and maps.

@@ -103,7 +103,7 @@ struct AtlasView: View {
                 Button("Map credits and collectible index", systemImage: "safari") { map = MapDestination(url: GuideSource.maps.url) }
                     .font(.subheadline)
             }.padding(.horizontal, 20).padding(.bottom, 32)
-        }.background(Theme.background).navigationTitle("Atlas")
+        }.background(Theme.background).navigationTitle("Map")
             .sheet(item: $map) { destination in
                 PublishedMapBrowser(url: destination.url).ignoresSafeArea()
             }

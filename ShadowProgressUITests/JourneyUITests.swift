@@ -1,54 +1,71 @@
 import XCTest
 
-/// Exercise the new navigation and themes against a separate test journal.
+/// Verify the mission hierarchy, visible spoilers, native search, themes, and map presentation.
 final class JourneyUITests: XCTestCase {
     @MainActor
-    func testChapterSelectionAndAtlas() throws {
+    func testMissionOrganizationAndVisibleSpoilers() throws {
         let app = XCUIApplication()
         app.launchArguments = ["--ui-testing"]
         app.launch()
-        XCTAssertTrue(app.navigationBars["Expedition"].waitForExistence(timeout: 10))
-        capture("Expedition — light", app: app)
+        XCTAssertTrue(app.navigationBars["Chapters"].waitForExistence(timeout: 10))
+        capture("Chapters — light", app: app)
 
-        app.tabBars.buttons["Journey"].tap()
         app.staticTexts["Kuwaq Yaku"].firstMatch.tap()
-        let current = app.buttons["I’m at this chapter"]
-        XCTAssertTrue(current.waitForExistence(timeout: 5))
-        current.tap()
-        XCTAssertTrue(app.buttons["Your current checkpoint"].exists)
-        capture("Chapter plan — Kuwaq Yaku", app: app)
+        XCTAssertTrue(app.staticTexts["Where the Twins Confer"].waitForExistence(timeout: 5))
+        capture("Kuwaq Yaku — actual story missions", app: app)
+        app.staticTexts["Path of the Living"].tap()
+        XCTAssertTrue(app.staticTexts["0 of 2 chapter goals"].waitForExistence(timeout: 5))
+        app.buttons["Set as current"].firstMatch.tap()
+        XCTAssertTrue(app.staticTexts["Current"].exists)
+        XCTAssertTrue(app.staticTexts["First Blood"].exists)
+        XCTAssertTrue(app.staticTexts["Fire of Life"].exists)
+        capture("Path of the Living — chapter and ongoing goals", app: app)
+        app.staticTexts["Fire of Life"].tap()
+        XCTAssertTrue(app.staticTexts["Spoiler"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Fire of Life"].exists)
+        XCTAssertFalse(app.buttons["Reveal objective"].exists)
+        capture("Spoiler objective — always visible", app: app)
 
-        app.tabBars.buttons["Atlas"].tap()
-        XCTAssertTrue(app.buttons["Open detailed game map"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["Kuwaq Yaku"].firstMatch.exists)
-        capture("Atlas — light", app: app)
-        app.buttons["Open detailed game map"].tap()
-        XCTAssertTrue(app.buttons["Close"].waitForExistence(timeout: 10))
-        capture("Detailed map — publisher viewer", app: app)
-        app.buttons["Close"].tap()
+        app.tabBars.buttons["Search"].tap()
+        let search = app.searchFields.firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout: 5))
+        search.tap()
+        search.typeText("The Chosen One")
+        if app.keyboards.buttons["Search"].exists { app.keyboards.buttons["Search"].tap() }
+        XCTAssertTrue(app.staticTexts["The Chosen One"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Recover Ix Chel’s Silver Box."].exists)
+        capture("Search finds spoiler titles and requirements", app: app)
     }
 
     @MainActor
-    func testAppearanceAndMissableFilter() throws {
+    func testAppearanceMissableFilterAndMap() throws {
         let app = XCUIApplication()
         app.launchArguments = ["--ui-testing"]
         app.launch()
-        app.buttons["Field Kit"].tap()
+        app.buttons["Settings"].tap()
         let appearance = app.segmentedControls.firstMatch
         XCTAssertTrue(appearance.waitForExistence(timeout: 5))
         appearance.buttons["Light"].tap()
         XCTAssertTrue(appearance.buttons["Light"].isSelected)
         appearance.buttons["Dark"].tap()
         XCTAssertTrue(appearance.buttons["Dark"].isSelected)
-        capture("Field Kit — dark", app: app)
         app.buttons["Done"].tap()
-        capture("Expedition — dark", app: app)
+        capture("Chapters — dark", app: app)
 
-        app.tabBars.buttons["Achievements"].tap()
-        app.buttons["achievementFilter"].tap()
-        app.buttons["Missable · unfinished"].tap()
-        XCTAssertTrue(app.staticTexts["14 objectives"].waitForExistence(timeout: 5))
-        capture("Missable achievements — dark", app: app)
+        app.tabBars.buttons["Search"].tap()
+        if app.keyboards.buttons["Search"].exists { app.keyboards.buttons["Search"].tap() }
+        app.segmentedControls["catalogScope"].buttons["Missable"].tap()
+        XCTAssertTrue(app.staticTexts["14 achievements"].waitForExistence(timeout: 5))
+        capture("Missable catalog — dark", app: app)
+
+        // Native search collapses the other tabs into the leading chapter button.
+        app.tabBars.buttons["Chapters"].tap()
+        app.tabBars.buttons["Map"].tap()
+        XCTAssertTrue(app.buttons["Cozumel map"].waitForExistence(timeout: 5))
+        capture("Map — dark", app: app)
+        app.buttons["Cozumel map"].tap()
+        XCTAssertTrue(app.buttons["Close"].waitForExistence(timeout: 10))
+        app.buttons["Close"].tap()
     }
 
     @MainActor

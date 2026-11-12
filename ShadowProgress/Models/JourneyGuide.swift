@@ -221,3 +221,146 @@ enum JourneyGuide {
         37: AchievementGuide(firstChapter: .kuwaqYaku, risk: .missable, timing: "Path of the Living · mud-wall tutorial", prerequisite: "Mud camouflage and a mud-covered wall.", advice: "Use the tutorial wall to ambush a passing guard. Ordinary foliage stealth does not count.", lastSuggestedChapter: .oilFields, verifiedWindow: true)
     ]
 }
+
+/// Actual story missions replace the old list of traversal-area checkpoints.
+/// Region collections make the route browsable without pretending that cumulative goals belong to every chapter.
+enum StoryMission: String, CaseIterable, Identifiable, Hashable {
+    case faintLight, inTheShadows, huntersMoon, headAboveWater, roughLanding, braveAdventurer
+    case twinsConfer, pathLiving, pathDead, pathHiddenCity, hiddenCity, eyeSerpent, emptyHanded
+    case rebellionLives, lastEmperor, downpour, viaVeritas, viaCrucis, veniVidiPerdidi, fallingApart, citySerpent
+    var id: String { rawValue }
+    var number: Int { Self.allCases.firstIndex(of: self)! + 1 }
+    var title: String {
+        switch self {
+        case .faintLight: return "A Faint Light"
+        case .inTheShadows: return "In the Shadows"
+        case .huntersMoon: return "Hunter’s Moon"
+        case .headAboveWater: return "Head Above Water"
+        case .roughLanding: return "Rough Landing"
+        case .braveAdventurer: return "Brave Adventurer"
+        case .twinsConfer: return "Where the Twins Confer"
+        case .pathLiving: return "Path of the Living"
+        case .pathDead: return "Path of the Dead"
+        case .pathHiddenCity: return "Path to the Hidden City"
+        case .hiddenCity: return "The Hidden City"
+        case .eyeSerpent: return "Eye of the Serpent"
+        case .emptyHanded: return "Empty-Handed"
+        case .rebellionLives: return "Rebellion Lives"
+        case .lastEmperor: return "Last Emperor"
+        case .downpour: return "Downpour"
+        case .viaVeritas: return "Via Veritas"
+        case .viaCrucis: return "Via Crucis"
+        case .veniVidiPerdidi: return "Veni Vidi Perdidi"
+        case .fallingApart: return "Falling Apart"
+        case .citySerpent: return "City of the Serpent"
+        }
+    }
+    var region: MissionRegion {
+        switch self {
+        case .faintLight, .inTheShadows, .huntersMoon, .headAboveWater: return .cozumel
+        case .roughLanding, .braveAdventurer: return .jungle
+        case .twinsConfer, .pathLiving, .pathDead: return .kuwaqYaku
+        case .pathHiddenCity, .hiddenCity: return .hiddenCity
+        case .eyeSerpent, .emptyHanded: return .cenote
+        case .rebellionLives, .lastEmperor: return .upperPaititi
+        case .downpour: return .oilFields
+        case .viaVeritas, .viaCrucis, .veniVidiPerdidi: return .sanJuan
+        case .fallingApart: return .returnPaititi
+        case .citySerpent: return .finale
+        }
+    }
+    var route: JourneyChapter {
+        if self == .braveAdventurer { return .manor }
+        return region.route
+    }
+    var sourceURL: URL {
+        URL(string: "https://www.powerpyx.com/shadow-of-the-tomb-raider-full-walkthrough-all-story-missions/")!
+    }
+    static func from(legacy: JourneyChapter) -> StoryMission {
+        switch legacy {
+        case .cozumel: return .huntersMoon
+        case .jungle: return .roughLanding
+        case .manor: return .braveAdventurer
+        case .kuwaqYaku: return .twinsConfer
+        case .eagle: return .pathHiddenCity
+        case .paititi, .belly, .head, .mountain: return .hiddenCity
+        case .cenote: return .eyeSerpent
+        case .upperPaititi: return .rebellionLives
+        case .oilFields: return .downpour
+        case .sanJuan: return .viaVeritas
+        case .returnPaititi: return .fallingApart
+        case .finale, .cleanup, .dlc: return .citySerpent
+        }
+    }
+}
+
+enum MissionRegion: String, CaseIterable, Identifiable {
+    case cozumel, jungle, kuwaqYaku, hiddenCity, cenote, upperPaititi, oilFields, sanJuan, returnPaititi, finale
+    var id: String { rawValue }
+    var route: JourneyChapter {
+        switch self {
+        case .cozumel: return .cozumel
+        case .jungle: return .jungle
+        case .kuwaqYaku: return .kuwaqYaku
+        case .hiddenCity: return .paititi
+        case .cenote: return .cenote
+        case .upperPaititi: return .upperPaititi
+        case .oilFields: return .oilFields
+        case .sanJuan: return .sanJuan
+        case .returnPaititi: return .returnPaititi
+        case .finale: return .finale
+        }
+    }
+    var title: String { route.title }
+    var missions: [StoryMission] { StoryMission.allCases.filter { $0.region == self } }
+}
+
+/// Each of the 99 achievements has exactly one primary collection.
+/// Contextual ongoing goals never inflate a chapter's completion count.
+enum AchievementHome: Hashable {
+    case mission(StoryMission), acrossGame, expansion(String)
+}
+
+enum AchievementOrganization {
+    static let expansionNames = ["The Forge", "The Pillar", "The Nightmare", "The Price of Survival", "The Serpent's Heart", "The Grand Caiman", "The Path Home"]
+    private static let missionIDs: [Int: StoryMission] = [
+        22: .huntersMoon, 23: .huntersMoon, 45: .huntersMoon, 46: .huntersMoon,
+        47: .headAboveWater, 48: .roughLanding, 38: .twinsConfer,
+        37: .pathLiving, 49: .pathLiving, 14: .pathDead,
+        29: .hiddenCity, 50: .hiddenCity, 51: .emptyHanded, 31: .rebellionLives,
+        32: .lastEmperor, 39: .lastEmperor, 52: .lastEmperor, 21: .downpour,
+        53: .viaVeritas, 54: .viaCrucis, 25: .fallingApart, 40: .fallingApart, 55: .fallingApart,
+        56: .citySerpent, 57: .citySerpent
+    ]
+    static func home(for achievement: Achievement) -> AchievementHome {
+        if achievement.id == "dlc-seasoned-pro" { return .expansion("Across all DLC") }
+        if let pack = achievement.pack { return .expansion(pack) }
+        if let number = Int(achievement.id.suffix(2)), let mission = missionIDs[number] { return .mission(mission) }
+        return .acrossGame
+    }
+    static func goals(in mission: StoryMission) -> [Achievement] {
+        AchievementCatalog.all.filter { home(for: $0) == .mission(mission) }
+    }
+    static var acrossGame: [Achievement] {
+        AchievementCatalog.all.filter { home(for: $0) == .acrossGame }
+    }
+    static func goals(in region: MissionRegion) -> [Achievement] {
+        region.missions.flatMap { goals(in: $0) }
+    }
+    static func goals(inExpansion name: String) -> [Achievement] {
+        AchievementCatalog.all.filter { home(for: $0) == .expansion(name) }
+    }
+    static func ongoing(at mission: StoryMission) -> [Achievement] {
+        acrossGame.filter {
+            let guide = JourneyGuide.guide(for: $0)
+            return guide.risk == .missable && guide.firstChapter.order <= mission.route.order && mission.route.order <= guide.lastSuggestedChapter.order
+        }
+    }
+    static func subtitle(for achievement: Achievement) -> String {
+        switch home(for: achievement) {
+        case .mission(let mission): return mission.title
+        case .acrossGame: return "Across the game"
+        case .expansion(let pack): return pack
+        }
+    }
+}
